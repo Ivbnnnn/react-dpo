@@ -1,0 +1,28 @@
+{
+  "items": {
+    "replaybelt": {
+      "id":1,
+      "src": "/replaybelt/replaybelt1.jpg",
+      "name": "Replay Belt",
+      "price": 25
+    },
+    "thardsoda": {
+      "id":2,
+      "src": "/thardsoda/thardsoda1.jpg",
+      "name": "Thard Soda",
+      "price": 15
+    },
+    "waxedjacket": {
+      "id":3,
+      "src": "/waxedjacket/waxedjacket1.jpg",
+      "name": "Waxed Jacket",
+      "price": 50
+    },
+    "waxedjacket2": {
+      "id":4,
+      "src": "/waxedjacket/waxedjacket2.jpg",
+      "name": "Waxed Jacket",
+      "price": 50
+    }
+  }
+}
