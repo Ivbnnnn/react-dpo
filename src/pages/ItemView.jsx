@@ -6,8 +6,11 @@ const itemsArray = Object.entries(itemsData.items);
 export default function ItemView() {
     const navigate = useNavigate()
     const {id} = useParams()
-     const itemEntry = itemsArray.find(([key, item]) => item.id === +id)
+    const itemEntry = itemsArray.find(([key, item]) => item.id === +id)
     const item = itemEntry?.[1] 
+    if (!item){
+      return navigate('/404')
+    }
     return (
     
     <div className="text-mainText bg-page min-h-screen">
