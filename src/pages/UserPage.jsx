@@ -1,9 +1,24 @@
 import React from 'react'
 import { useNavigate  } from 'react-router-dom'
+import { useQuery } from "@tanstack/react-query";
+import Card from '../components/Card';
+import ItemAddButton from '../components/ItemAddButton';
 export default function UserPage() {
+
+  const user_id =1
+  const { data: items = [], isLoading, error } = useQuery({
+      queryKey: ["items"],
+      queryFn: () =>
+        fetch(`http://localhost:5000/get_owner_items/${user_id}`)
+          .then(res => res.json()),
+      staleTime: 5 * 60 * 1000,  // 5 минут данные считаются "свежими"
+      cacheTime: 30 * 60 * 1000 // храним в памяти 30 минут
+    });
+  
+    
   const navigate = useNavigate ()
   return (
-    <div className="text-mainText bg-page min-h-screen">
+    <div className="text-mainText bg-page min-h-screen relative">
       <button
       onClick={ () => navigate('/')}
       className='text-accent p-3'><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" className="bi bi-arrow-bar-left" viewBox="0 0 16 16">
@@ -16,15 +31,25 @@ export default function UserPage() {
           <div className='flex-col py-4'>
               <div className='text-accent text-xl'>Количество покупок</div>
               <div className='pl-8 text-accent text-3xl'>0</div>
+              <ItemAddButton owner_id={user_id}/>
           </div>
         
         </div>
         <img 
         className="w-32 h-32 border-2 rounded-full border-accent object-cover shadow-lg"
-        src="/thardsoda/thardsoda1.jpg" 
+        src="" 
         alt="Avatar" 
-      />
+        />
+        
 
+      </div>
+      <div className="grid grid-cols-[repeat(2,1fr)] h-width gap-4 p-4 lg:grid-cols-[repeat(4,1fr)] md:grid-cols-[repeat(3,1fr)] lg:m-10 lg:gap-10 md:m-6 md:gap-6">
+          {isLoading && "Загрузка"}
+          {error && "Ошибка"}
+          <div>{items.map((item) => (
+                <Card key={item.item_id} item={item} />
+                ))}
+              </div>
       </div>
     
     </div>
