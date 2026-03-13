@@ -1,30 +1,18 @@
+import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-
-// apiDeleteItem должен принимать itemId и возвращать промис
-async function apiDeleteItem(itemId) {
-  const res = await fetch(`http://localhost:5000/delete_item/${itemId}`, {
-    method: "DELETE",
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: res.statusText }));
-    throw new Error(err.detail || res.statusText);
-  }
-  return res.status === 204 ? null : (await res.json().catch(() => null));
-}
+import { deleteItem } from "../api/items"; // путь поправь под проект
 
 export default function ItemDeleteButton({ itemId }) {
   const qc = useQueryClient();
   const navigate = useNavigate();
 
   const mutation = useMutation({
-    // mutationFn получает переменную, которую мы передаём в .mutate()
-    mutationFn: (id) => apiDeleteItem(id),
-
+    mutationFn: (id) => deleteItem(id),
     onSuccess: (_data, variables) => {
-      const deletedId = variables; // то, что мы передали в mutate()
+      const deletedId = variables;
 
-      // 1) Обновляем кеш списка "items" (подстраиваемся под разные форматы)
+      // Удаляем из кеша списка items (работаем с разными форматами)
       qc.setQueryData(["items"], (old) => {
         if (!old) return old;
 
@@ -39,13 +27,11 @@ export default function ItemDeleteButton({ itemId }) {
         return old;
       });
 
-      // 2) Удаляем конкретный кэш для ["item", deletedId]
+      // Удаляем конкретный кэш для item
       qc.removeQueries({ queryKey: ["item", String(deletedId)], exact: true });
 
-      // 3) Навигация после успешного удаления
       navigate("/user");
     },
-
     onError: (err) => {
       alert("Не удалось удалить предмет: " + (err?.message || "Unknown error"));
     },
@@ -53,7 +39,7 @@ export default function ItemDeleteButton({ itemId }) {
 
   return (
     <button
-      onClick={() => mutation.mutate(itemId)} // передаём id в mutate
+      onClick={() => mutation.mutate(itemId)}
       disabled={mutation.isLoading}
       className="m-3 border-2 border-accent rounded-lg p-3 text-2xl"
     >

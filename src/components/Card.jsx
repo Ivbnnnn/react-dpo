@@ -10,7 +10,7 @@ export default function Card({ item }) {
   return (
     
     <Link to={`/item/${item.item_id}`} state={{item}}>
-      <div className="border rounded-lg p-2 border-accent">
+      <div className="border rounded-lg p-2 border-accent m-4">
         <img src={normalizeImageUrl(item.src)} alt={item.item_name} />
         <h3>{item.item_name}</h3>
         {/* <p>${item.price}</p> */}

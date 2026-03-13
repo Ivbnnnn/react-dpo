@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import itemsData from '/items.json'
 import ItemDeleteButton from '../components/ItemDeleteButton';
 import ItemEditButton from '../components/ItemEditButton'
+import api from "../api/api";
 function normalizeImageUrl(url) {
   if (!url) return "";
 
@@ -11,14 +12,22 @@ function normalizeImageUrl(url) {
 }
 
 export default function ItemView() {
-
-    const user_id = 1;
-
     const navigate = useNavigate()
+
+    const { data: user, isLoading: userLoading, error: userError } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: async () => {
+      const res = await api.get("/users/me");
+      return res.data; // здесь есть user_id и user_name
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+
     const {id} = useParams()
     const location = useLocation();
     const passedItem = location.state?.item;
-    
+    console.log(user)
 
     const { data: item } = useQuery({
     queryKey: ["item", id],
@@ -33,7 +42,7 @@ export default function ItemView() {
     if (!finalItem){
       return <Navigate to="/404" replace />;
     }
-    const isOwner = user_id === finalItem.owner_id ? true : false
+    const isOwner = user?.user_id === finalItem.owner_id || user?.role_id === 2;
     return (
     
     <div className="text-mainText bg-page min-h-screen relative">

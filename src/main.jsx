@@ -13,6 +13,9 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       retry: 1,
     },
+    mutations: {
+      retry: 0,
+    },
   },
 });
 
@@ -20,7 +23,7 @@ const queryClient = new QueryClient({
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename="/react-dpo">
+      <BrowserRouter>
         <App />
       </BrowserRouter>
     </QueryClientProvider>
